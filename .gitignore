@@ -1,0 +1,6 @@
+# build artifacts
+build/
+
+# runtime artifacts (see Makefile)
+.env
+
