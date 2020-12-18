@@ -27,6 +27,7 @@ import (
 	"strings"
 
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/tokens"
+	"github.com/sapcc/go-bits/logg"
 )
 
 //CredentialID identifies an EC2 credential.
@@ -47,45 +48,24 @@ func (cred CredentialID) CacheKey() string {
 	return hex.EncodeToString(hashBytes[:])
 }
 
-//CredentialIDList is a []CredentialID that implements the cobra.Value interface.
-type CredentialIDList []CredentialID
-
-//String implements the cobra.Value interface.
-func (l *CredentialIDList) String() string {
-	strs := make([]string, len(*l))
-	for idx, cred := range *l {
-		strs[idx] = cred.String()
-	}
-	return strings.Join(strs, ",")
-}
-
-//Set implements the cobra.Value interface.
-func (l *CredentialIDList) Set(input string) error {
-	*l = nil
-	for _, pair := range strings.Split(input, ",") {
-		pair = strings.TrimSpace(pair)
-		if pair == "" {
-			continue
-		}
-		fields := strings.Split(pair, ":")
+//MustParseCredentials parses CredentialIDs passed in as CLI arguments.
+func MustParseCredentials(args []string) []CredentialID {
+	result := make([]CredentialID, len(args))
+	for idx, arg := range args {
+		fields := strings.Split(arg, ":")
 		if len(fields) != 2 {
-			return fmt.Errorf(`cannot parse userid:accesskey pair: %q`, pair)
+			logg.Fatal("cannot parse userid:accesskey pair: %q", arg)
 		}
 		cred := CredentialID{
 			UserID:    strings.TrimSpace(fields[0]),
 			AccessKey: strings.TrimSpace(fields[1]),
 		}
 		if cred.UserID == "" || cred.AccessKey == "" {
-			return fmt.Errorf(`cannot parse userid:accesskey pair: %q`, pair)
+			logg.Fatal("cannot parse userid:accesskey pair: %q", arg)
 		}
-		*l = append(*l, cred)
+		result[idx] = cred
 	}
-	return nil
-}
-
-//Type implements the cobra.Value interface.
-func (l *CredentialIDList) Type() string {
-	return "<credentials>"
+	return result
 }
 
 //CredentialPayload contains the payload for a credential which we write into memcached.

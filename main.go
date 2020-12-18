@@ -35,8 +35,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgCreds CredentialIDList
-var cfgMemcacheServers []string
+var flagMemcacheServers []string
 
 func main() {
 	//when behind a mitmproxy, skip certificate validation
@@ -56,25 +55,24 @@ func main() {
 			cmd.Help()
 		},
 	}
-	rootCmd.PersistentFlags().VarP(&cfgCreds, "credentials", "c", `List of EC2 credentials (comma-separated list of "userid:accesskey" pairs).`)
 
 	checkKeystoneCmd := cobra.Command{
-		Use:   "check-keystone",
+		Use:   "check-keystone <userid:accesskey>...",
 		Short: "Query the credentials in Keystone (read-only).",
 		Long:  "Query the credentials in Keystone (read-only).",
-		Args:  cobra.NoArgs,
+		Args:  cobra.MinimumNArgs(1),
 		Run:   runCheckKeystone,
 	}
 	rootCmd.AddCommand(&checkKeystoneCmd)
 
 	checkMemcachedCmd := cobra.Command{
-		Use:   "check-memcached",
-		Short: "Query the credentials in Keystone (read-only).",
-		Long:  "Query the credentials in Keystone (read-only).",
-		Args:  cobra.NoArgs,
+		Use:   "check-memcached <userid:accesskey>...",
+		Short: "Query the credentials in Memcache (read-only).",
+		Long:  "Query the credentials in Memcache (read-only).",
+		Args:  cobra.MinimumNArgs(1),
 		Run:   runCheckMemcache,
 	}
-	checkMemcachedCmd.PersistentFlags().StringSliceVarP(&cfgMemcacheServers, "servers", "s", []string{"localhost:11211"}, `List of memcached server endpoints (usually in "host:port" form).`)
+	checkMemcachedCmd.PersistentFlags().StringSliceVarP(&flagMemcacheServers, "servers", "s", []string{"localhost:11211"}, `List of memcached server endpoints (usually in "host:port" form).`)
 	rootCmd.AddCommand(&checkMemcachedCmd)
 
 	if err := rootCmd.Execute(); err != nil {
@@ -89,20 +87,24 @@ var eo = gophercloud.EndpointOpts{
 }
 
 func runCheckKeystone(cmd *cobra.Command, args []string) {
+	creds := MustParseCredentials(args)
+
 	provider, err := clientconfig.AuthenticatedClient(nil)
 	must("authenticate to OpenStack using OS_* environment variables", err)
 	identityV3, err := openstack.NewIdentityV3(provider, eo)
 	must("select OpenStack Identity V3 endpoint", err)
 
-	for _, cred := range cfgCreds {
+	for _, cred := range creds {
 		payload := GetCredentialFromKeystone(identityV3, cred)
 		printAsJSON(payload)
 	}
 }
 
 func runCheckMemcache(cmd *cobra.Command, args []string) {
-	mc := memcache.New(cfgMemcacheServers...)
-	for _, cred := range cfgCreds {
+	creds := MustParseCredentials(args)
+
+	mc := memcache.New(flagMemcacheServers...)
+	for _, cred := range creds {
 		item, err := mc.Get(cred.CacheKey())
 		if err == memcache.ErrCacheMiss {
 			printAsJSON(nil)
