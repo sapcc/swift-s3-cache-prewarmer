@@ -26,15 +26,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
+	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gophercloud/gophercloud"
-	"github.com/gophercloud/gophercloud/openstack"
-	"github.com/gophercloud/utils/openstack/clientconfig"
 	"github.com/sapcc/go-bits/logg"
 	"github.com/spf13/cobra"
 )
 
+var flagConservative bool
+var flagExpiryTime time.Duration
 var flagMemcacheServers []string
 
 func main() {
@@ -55,11 +57,12 @@ func main() {
 			cmd.Help()
 		},
 	}
+	rootCmd.PersistentFlags().StringSliceVarP(&flagMemcacheServers, "servers", "s", []string{"localhost:11211"}, `List of memcached server endpoints (usually in "host:port" form).`)
 
 	checkKeystoneCmd := cobra.Command{
 		Use:   "check-keystone <userid:accesskey>...",
-		Short: "Query the credentials in Keystone (read-only).",
-		Long:  "Query the credentials in Keystone (read-only).",
+		Short: "Query the given credentials in Keystone (read-only).",
+		Long:  "Query the given credentials in Keystone (read-only).",
 		Args:  cobra.MinimumNArgs(1),
 		Run:   runCheckKeystone,
 	}
@@ -67,13 +70,23 @@ func main() {
 
 	checkMemcachedCmd := cobra.Command{
 		Use:   "check-memcached <userid:accesskey>...",
-		Short: "Query the credentials in Memcache (read-only).",
-		Long:  "Query the credentials in Memcache (read-only).",
+		Short: "Query the given credentials in Memcache (read-only).",
+		Long:  "Query the given credentials in Memcache (read-only).",
 		Args:  cobra.MinimumNArgs(1),
 		Run:   runCheckMemcache,
 	}
-	checkMemcachedCmd.PersistentFlags().StringSliceVarP(&flagMemcacheServers, "servers", "s", []string{"localhost:11211"}, `List of memcached server endpoints (usually in "host:port" form).`)
 	rootCmd.AddCommand(&checkMemcachedCmd)
+
+	prewarmCmd := cobra.Command{
+		Use:   "prewarm <userid:accesskey>...",
+		Short: "Keep the given credentials prewarmed in Memcache.",
+		Long:  "Keep the given credentials prewarmed in Memcache.",
+		Args:  cobra.MinimumNArgs(1),
+		Run:   runPrewarm,
+	}
+	prewarmCmd.Flags().BoolVar(&flagConservative, "conservative", false, "Do not touch Memcache when the existing cache entry conflicts with information from Keystone.")
+	prewarmCmd.Flags().DurationVar(&flagExpiryTime, "expiry", 10*time.Minute, "Expiration cycle for Memcache entries. The prewarm will happen in intervals of 1/5 the expiration interval.")
+	rootCmd.AddCommand(&prewarmCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		//the error was already printed by Execute()
@@ -88,33 +101,60 @@ var eo = gophercloud.EndpointOpts{
 
 func runCheckKeystone(cmd *cobra.Command, args []string) {
 	creds := MustParseCredentials(args)
-
-	provider, err := clientconfig.AuthenticatedClient(nil)
-	must("authenticate to OpenStack using OS_* environment variables", err)
-	identityV3, err := openstack.NewIdentityV3(provider, eo)
-	must("select OpenStack Identity V3 endpoint", err)
+	identityV3 := MustConnectToKeystone()
 
 	for _, cred := range creds {
-		payload := GetCredentialFromKeystone(identityV3, cred)
-		printAsJSON(payload)
+		printAsJSON(GetCredentialFromKeystone(identityV3, cred))
 	}
 }
 
 func runCheckMemcache(cmd *cobra.Command, args []string) {
 	creds := MustParseCredentials(args)
-
 	mc := memcache.New(flagMemcacheServers...)
-	for _, cred := range creds {
-		item, err := mc.Get(cred.CacheKey())
-		if err == memcache.ErrCacheMiss {
-			printAsJSON(nil)
-			continue
-		}
-		must("fetch credential from Memcache", err)
 
-		var payload CredentialPayload
-		must("decode credential payload from Memcache", json.Unmarshal(item.Value, &payload))
-		printAsJSON(payload)
+	for _, cred := range creds {
+		printAsJSON(GetCredentialFromMemcache(mc, cred))
+	}
+}
+
+func runPrewarm(cmd *cobra.Command, args []string) {
+	creds := MustParseCredentials(args)
+	identityV3 := MustConnectToKeystone()
+	mc := memcache.New(flagMemcacheServers...)
+
+	cycleLength := flagExpiryTime / 5
+
+	for {
+		cycleStart := time.Now()
+
+		for _, cred := range creds {
+			//get new payload from Keystone
+			payload := GetCredentialFromKeystone(identityV3, cred)
+			if payload == nil {
+				//there was a problem getting the payload - we already logged the
+				//reason and can directly move on
+				continue
+			}
+
+			//double-check with Memcache if requested
+			if flagConservative {
+				cachedPayload := GetCredentialFromMemcache(mc, cred)
+				if !reflect.DeepEqual(cachedPayload, payload) {
+					logg.Info("skipping credential %q: payload in Memcache does not match our expectation", cred.String())
+					continue
+				}
+			}
+
+			//write payload into Memcache (or, if the payload has not changed, just
+			//update the expiration time)
+			SetCredentialInMemcache(mc, cred, *payload, flagExpiryTime)
+		}
+
+		//sleep until start of next prewarm cycle
+		sleepLength := cycleLength - time.Now().Sub(cycleStart)
+		logg.Info("sleeping for %s", sleepLength.String())
+		time.Sleep(sleepLength)
+		_, _, _ = creds, identityV3, mc
 	}
 }
 

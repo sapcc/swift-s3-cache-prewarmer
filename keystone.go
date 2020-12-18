@@ -24,10 +24,21 @@ import (
 	"strings"
 
 	"github.com/gophercloud/gophercloud"
+	"github.com/gophercloud/gophercloud/openstack"
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2credentials"
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2tokens"
+	"github.com/gophercloud/utils/openstack/clientconfig"
 	"github.com/sapcc/go-bits/logg"
 )
+
+//MustConnectToKeystone connects to Keystone or dies trying.
+func MustConnectToKeystone() *gophercloud.ServiceClient {
+	provider, err := clientconfig.AuthenticatedClient(nil)
+	must("authenticate to OpenStack using OS_* environment variables", err)
+	identityV3, err := openstack.NewIdentityV3(provider, eo)
+	must("select OpenStack Identity V3 endpoint", err)
+	return identityV3
+}
 
 //GetCredentialFromKeystone fetches an EC2 credential from Keystone.
 //Returns nil if the credential does not exist.
