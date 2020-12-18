@@ -20,6 +20,8 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -36,6 +38,13 @@ type CredentialID struct {
 //String recovers the string representation of this CredentialID.
 func (cred CredentialID) String() string {
 	return fmt.Sprintf("%s:%s", cred.UserID, cred.AccessKey)
+}
+
+//CacheKey returns the key under which this credential's payload is stored in memcache.
+func (cred CredentialID) CacheKey() string {
+	rawKey := "s3secret/" + cred.AccessKey
+	hashBytes := md5.Sum([]byte(rawKey))
+	return hex.EncodeToString(hashBytes[:])
 }
 
 //CredentialIDList is a []CredentialID that implements the cobra.Value interface.
@@ -89,4 +98,30 @@ type CredentialPayload struct {
 //MarshalJSON implements the json.Marshaler interface.
 func (p CredentialPayload) MarshalJSON() ([]byte, error) {
 	return json.Marshal([]interface{}{p.Headers, p.Project, p.Secret})
+}
+
+//UnmarshalJSON implements the json.Marshaler interface.
+func (p *CredentialPayload) UnmarshalJSON(buf []byte) error {
+	var fields []json.RawMessage
+	err := json.Unmarshal(buf, &fields)
+	if err != nil {
+		return err
+	}
+	if len(fields) != 3 {
+		return fmt.Errorf("expected CredentialPayload with 3 elements, got %d elements", len(fields))
+	}
+
+	err = json.Unmarshal([]byte(fields[0]), &p.Headers)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal([]byte(fields[1]), &p.Project)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal([]byte(fields[2]), &p.Secret)
+	if err != nil {
+		return err
+	}
+	return nil
 }
