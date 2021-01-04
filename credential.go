@@ -27,6 +27,7 @@ import (
 	"strings"
 
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/tokens"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sapcc/go-bits/logg"
 )
 
@@ -46,6 +47,14 @@ func (cred CredentialID) CacheKey() string {
 	rawKey := "s3secret/" + cred.AccessKey
 	hashBytes := md5.Sum([]byte(rawKey))
 	return hex.EncodeToString(hashBytes[:])
+}
+
+//AsLabels represents this credential as a set of Prometheus labels.
+func (cred CredentialID) AsLabels() prometheus.Labels {
+	return prometheus.Labels{
+		"userid":    cred.UserID,
+		"accesskey": cred.AccessKey,
+	}
 }
 
 //MustParseCredentials parses CredentialIDs passed in as CLI arguments.

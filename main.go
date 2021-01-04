@@ -21,6 +21,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -31,12 +32,16 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gophercloud/gophercloud"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/sapcc/go-bits/httpee"
 	"github.com/sapcc/go-bits/logg"
 	"github.com/spf13/cobra"
 )
 
 var flagConservative bool
 var flagExpiryTime time.Duration
+var flagPromListenAddress string
 var flagMemcacheServers []string
 
 func main() {
@@ -86,6 +91,7 @@ func main() {
 	}
 	prewarmCmd.Flags().BoolVar(&flagConservative, "conservative", false, "Do not touch Memcache when the existing cache entry conflicts with information from Keystone.")
 	prewarmCmd.Flags().DurationVar(&flagExpiryTime, "expiry", 10*time.Minute, "Expiration cycle for Memcache entries. The prewarm will happen in intervals of 1/5 the expiration interval.")
+	prewarmCmd.Flags().StringVar(&flagPromListenAddress, "listen", "localhost:8080", "Listen address for HTTP server exposing Prometheus metrics.")
 	rootCmd.AddCommand(&prewarmCmd)
 
 	if err := rootCmd.Execute(); err != nil {
@@ -117,44 +123,93 @@ func runCheckMemcache(cmd *cobra.Command, args []string) {
 	}
 }
 
+var (
+	prewarmTimestampSecsGauge = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "swift_s3_cache_prewarm_last_run_secs",
+			Help: "UNIX timestamp in seconds of last successful cache prewarm for a particular S3 credential.",
+		},
+		[]string{"userid", "accesskey"},
+	)
+	prewarmDurationSecsGauge = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "swift_s3_cache_prewarm_duration_secs",
+			Help: "Duration in seconds of last successful cache prewarm for a particular S3 credential.",
+		},
+		[]string{"userid", "accesskey"},
+	)
+)
+
 func runPrewarm(cmd *cobra.Command, args []string) {
 	creds := MustParseCredentials(args)
 	identityV3 := MustConnectToKeystone()
 	mc := memcache.New(flagMemcacheServers...)
 
+	//expose Prometheus metrics
+	prometheus.MustRegister(prewarmTimestampSecsGauge)
+	prometheus.MustRegister(prewarmDurationSecsGauge)
+	ctx := httpee.ContextWithSIGINT(context.Background())
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		err := httpee.ListenAndServeContext(ctx, flagPromListenAddress, nil)
+		if err != nil {
+			logg.Fatal("error returned from httpee.ListenAndServeContext(): %s", err.Error())
+		}
+	}()
+	//make sure that all swift_s3_cache_prewarm_last_run_secs timeseries exist,
+	//even if prewarm never succeeds
+	for _, cred := range creds {
+		prewarmTimestampSecsGauge.With(cred.AsLabels()).Set(0)
+	}
+
 	cycleLength := flagExpiryTime / 5
+	tick := time.Tick(cycleLength)
+
+	//do the first prewarm immediately
+	doPrewarmCycle(creds, identityV3, mc)
 
 	for {
-		cycleStart := time.Now()
+		select {
+		case <-ctx.Done():
+			//exit if SIGINT was received
+			return
+		case <-tick:
+			doPrewarmCycle(creds, identityV3, mc)
+		}
+	}
+}
 
-		for _, cred := range creds {
-			//get new payload from Keystone
-			payload := GetCredentialFromKeystone(identityV3, cred)
-			if payload == nil {
-				//there was a problem getting the payload - we already logged the
-				//reason and can directly move on
-				continue
-			}
+func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient, mc *memcache.Client) {
+	for _, cred := range creds {
+		prewarmStart := time.Now()
 
-			//double-check with Memcache if requested
-			if flagConservative {
-				cachedPayload := GetCredentialFromMemcache(mc, cred)
-				if !reflect.DeepEqual(cachedPayload, payload) {
-					logg.Info("skipping credential %q: payload in Memcache does not match our expectation", cred.String())
-					continue
-				}
-			}
-
-			//write payload into Memcache (or, if the payload has not changed, just
-			//update the expiration time)
-			SetCredentialInMemcache(mc, cred, *payload, flagExpiryTime)
+		//get new payload from Keystone
+		payload := GetCredentialFromKeystone(identityV3, cred)
+		if payload == nil {
+			//there was a problem getting the payload - we already logged the
+			//reason and can directly move on
+			continue
 		}
 
-		//sleep until start of next prewarm cycle
-		sleepLength := cycleLength - time.Now().Sub(cycleStart)
-		logg.Info("sleeping for %s", sleepLength.String())
-		time.Sleep(sleepLength)
-		_, _, _ = creds, identityV3, mc
+		//double-check with Memcache if requested
+		if flagConservative {
+			cachedPayload := GetCredentialFromMemcache(mc, cred)
+			if !reflect.DeepEqual(cachedPayload, payload) {
+				logg.Info("skipping credential %q: payload in Memcache does not match our expectation", cred.String())
+				continue
+			}
+		}
+
+		//write payload into Memcache (or, if the payload has not changed, just
+		//update the expiration time)
+		SetCredentialInMemcache(mc, cred, *payload, flagExpiryTime)
+		logg.Info("credential %q was prewarmed", cred.String())
+
+		//report Prometheus metrics for this prewarm run
+		prewarmEnd := time.Now()
+		labels := cred.AsLabels()
+		prewarmTimestampSecsGauge.With(labels).Set(float64(prewarmEnd.Unix()))
+		prewarmDurationSecsGauge.With(labels).Set(float64(prewarmEnd.Sub(prewarmStart)) / float64(time.Second))
 	}
 }
 

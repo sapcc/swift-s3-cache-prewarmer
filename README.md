@@ -10,6 +10,11 @@ periodically refreshes the cache entries so that they never expire.
 
 Build with `make/make install` or `go get` or `docker build`. Check out the `--help` for how to run this.
 
-## TODO
+## Metrics
 
-- Prometheus metric: last successful prewarm time per credential, time spent prewarming per credential
+The `prewarm` command exposes two gauges for each credential that was prewarmed:
+
+- `swift_s3_cache_prewarm_last_run_secs`: UNIX timestamp in seconds of last successful cache prewarm (or 0 before the first successful prewarm)
+- `swift_s3_cache_prewarm_duration_secs`: duration in seconds of last successful cache prewarm (or absent before the first successful prewarm)
+
+Each time series has the labels `userid` and `accesskey` identifying the credential in question.
