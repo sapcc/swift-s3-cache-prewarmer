@@ -27,7 +27,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"reflect"
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
@@ -194,7 +193,7 @@ func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient,
 		//double-check with Memcache if requested
 		if flagConservative {
 			cachedPayload := GetCredentialFromMemcache(mc, cred)
-			if !reflect.DeepEqual(cachedPayload, payload) {
+			if !cachedPayload.EqualTo(payload) {
 				logg.Info("skipping credential %q: payload in Memcache does not match our expectation", cred.String())
 				continue
 			}

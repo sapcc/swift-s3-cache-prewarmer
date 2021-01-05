@@ -24,6 +24,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"sort"
 	"strings"
 
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/tokens"
@@ -113,4 +115,55 @@ func (p *CredentialPayload) UnmarshalJSON(buf []byte) error {
 		return err
 	}
 	return nil
+}
+
+//EqualTo is similar to reflect.DeepEqual(), but considers some additional invariants.
+func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
+	if (p == nil) != (other == nil) {
+		return false
+	}
+	if p == nil {
+		//therefore also `other == nil`
+		return true
+	}
+	//Now we know that `p != nil && other != nil`.
+
+	//make a deep copy of the RHS
+	rhs := &CredentialPayload{
+		Headers: make(map[string]string, len(other.Headers)),
+		Project: other.Project,
+		Secret:  other.Secret,
+	}
+	for k, v := range other.Headers {
+		rhs.Headers[k] = v
+	}
+
+	//the one thing that makes this function different from a plain
+	//reflect.DeepEqual(): Headers["X-Roles"] is a comma-separated list
+	//where ordering does not matter
+	lhsRoles := p.Headers["X-Roles"]
+	rhsRoles := rhs.Headers["X-Roles"]
+	if lhsRoles != "" && rhsRoles != "" {
+		rhs.Headers["X-Roles"] = sortCommaSeparatedLikeInReference(rhsRoles, lhsRoles)
+	}
+
+	return reflect.DeepEqual(p, rhs)
+}
+
+func sortCommaSeparatedLikeInReference(input string, reference string) string {
+	refFieldIndex := make(map[string]int)
+	for idx, field := range strings.Split(reference, ",") {
+		refFieldIndex[field] = idx
+	}
+
+	fields := strings.Split(input, ",")
+	sort.Slice(fields, func(i, j int) bool {
+		idx1 := refFieldIndex[fields[i]]
+		idx2 := refFieldIndex[fields[j]]
+		if idx1 == idx2 {
+			return fields[i] < fields[j]
+		}
+		return idx1 < idx2
+	})
+	return strings.Join(fields, ",")
 }
