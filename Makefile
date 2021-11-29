@@ -4,10 +4,13 @@
 ################################################################################
 
 MAKEFLAGS=--warn-undefined-variables
+
 # /bin/sh is dash on Debian which does not support all features of ash/bash
 # to fix that we use /bin/bash only on Debian to not break Alpine
-ifneq ($(shell grep -c debian /etc/os-release),0)
-SHELL := /bin/bash
+ifneq (,$(wildcard /etc/os-release)) # check file existence
+	ifneq ($(shell grep -c debian /etc/os-release),0)
+		SHELL := /bin/bash
+	endif
 endif
 
 default: build-all
@@ -23,9 +26,9 @@ build/swift-s3-cache-prewarmer: FORCE
 
 DESTDIR =
 ifeq ($(shell uname -s),Darwin)
-  PREFIX = /usr/local
+	PREFIX = /usr/local
 else
-  PREFIX = /usr
+	PREFIX = /usr
 endif
 
 install: FORCE build/swift-s3-cache-prewarmer
@@ -80,6 +83,11 @@ build:
 
 vendor: FORCE
 	go mod tidy
+	go mod vendor
+	go mod verify
+
+vendor-compat: FORCE
+	go mod tidy -compat=$(shell awk '$$1 == "go" { print $$2 }' < go.mod)
 	go mod vendor
 	go mod verify
 

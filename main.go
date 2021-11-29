@@ -147,7 +147,7 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	//expose Prometheus metrics
 	prometheus.MustRegister(prewarmTimestampSecsGauge)
 	prometheus.MustRegister(prewarmDurationSecsGauge)
-	ctx := httpee.ContextWithSIGINT(context.Background())
+	ctx := httpee.ContextWithSIGINT(context.Background(), 1*time.Second)
 	go func() {
 		http.Handle("/metrics", promhttp.Handler())
 		err := httpee.ListenAndServeContext(ctx, flagPromListenAddress, nil)
