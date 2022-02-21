@@ -193,7 +193,8 @@ func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient,
 		//double-check with Memcache if requested
 		if flagConservative {
 			cachedPayload := GetCredentialFromMemcache(mc, cred)
-			if !cachedPayload.EqualTo(payload) {
+			// Accept a not yet cached credential in conservative mode to get it into the cache
+			if cachedPayload != nil && !cachedPayload.EqualTo(payload) {
 				logg.Info("skipping credential %q: payload in Memcache does not match our expectation", cred.String())
 				continue
 			}
