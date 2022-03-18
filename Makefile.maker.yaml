@@ -10,6 +10,8 @@ vendoring:
 
 golangciLint:
   createConfig: true
+  errcheckExcludes:
+    - (*github.com/spf13/cobra.Command).Help
 
 githubWorkflow:
   global:
