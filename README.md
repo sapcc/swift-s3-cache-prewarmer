@@ -1,5 +1,7 @@
 # swift-s3-cache-prewarmer
 
+[![CI](https://github.com/sapcc/swift-s3-cache-prewarmer/actions/workflows/ci.yaml/badge.svg)](https://github.com/sapcc/swift-s3-cache-prewarmer/actions/workflows/ci.yaml)
+
 We have a few customers making extensive use of the S3 API in our [Swift](https://github.com/openstack/swift) cluster.
 To avoid putting too much load on Keystone, Swift can cache S3 credentials in a Memcache. However, when the customer
 traffic is high enough to keep multiple parallel Swift API workers busy, once a cache entry expires, they all hit
