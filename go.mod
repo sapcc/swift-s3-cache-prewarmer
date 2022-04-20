@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
 	github.com/gophercloud/gophercloud v0.24.0
-	github.com/gophercloud/utils v0.0.0-20210909165623-d7085207ff6d
+	github.com/gophercloud/utils v0.0.0-20220307143606-8e7800759d16
 	github.com/prometheus/client_golang v1.12.1
 	github.com/sapcc/go-bits v0.0.0-20220204120448-40f0b29218db
 	github.com/spf13/cobra v1.4.0
