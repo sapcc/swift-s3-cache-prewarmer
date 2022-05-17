@@ -7,7 +7,7 @@ require (
 	github.com/gophercloud/gophercloud v0.24.0
 	github.com/gophercloud/utils v0.0.0-20220307143606-8e7800759d16
 	github.com/prometheus/client_golang v1.12.2
-	github.com/sapcc/go-bits v0.0.0-20220513163648-283c57b10c36
+	github.com/sapcc/go-bits v0.0.0-20220517080651-baba74caa927
 	github.com/spf13/cobra v1.4.0
 )
 
