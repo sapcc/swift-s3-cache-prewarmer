@@ -1,11 +1,17 @@
 # Configuration file for <https://github.com/sapcc/go-makefile-maker>
 
+metadata:
+  url: https://github.com/sapcc/swift-s3-cache-prewarmer
+
 binaries:
   - name:        swift-s3-cache-prewarmer
     fromPackage: .
     installTo:   bin/
 
 vendoring:
+  enabled: true
+
+dockerfile:
   enabled: true
 
 golangciLint:
