@@ -33,7 +33,7 @@ import (
 	"github.com/gophercloud/gophercloud"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sapcc/go-bits/httpee"
+	"github.com/sapcc/go-bits/httpext"
 	"github.com/sapcc/go-bits/logg"
 	"github.com/spf13/cobra"
 )
@@ -147,12 +147,12 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	//expose Prometheus metrics
 	prometheus.MustRegister(prewarmTimestampSecsGauge)
 	prometheus.MustRegister(prewarmDurationSecsGauge)
-	ctx := httpee.ContextWithSIGINT(context.Background(), 1*time.Second)
+	ctx := httpext.ContextWithSIGINT(context.Background(), 1*time.Second)
 	go func() {
 		http.Handle("/metrics", promhttp.Handler())
-		err := httpee.ListenAndServeContext(ctx, flagPromListenAddress, nil)
+		err := httpext.ListenAndServeContext(ctx, flagPromListenAddress, nil)
 		if err != nil {
-			logg.Fatal("error returned from httpee.ListenAndServeContext(): %s", err.Error())
+			logg.Fatal("error returned from httpext.ListenAndServeContext(): %s", err.Error())
 		}
 	}()
 	//make sure that all swift_s3_cache_prewarm_last_run_secs timeseries exist,
