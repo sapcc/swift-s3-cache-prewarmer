@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
 	github.com/gophercloud/gophercloud v0.25.0
-	github.com/gophercloud/utils v0.0.0-20220307143606-8e7800759d16
+	github.com/gophercloud/utils v0.0.0-20220627134740-f82c2a154887
 	github.com/prometheus/client_golang v1.12.2
 	github.com/sapcc/go-bits v0.0.0-20220621093742-b3e759973f94
 	github.com/spf13/cobra v1.5.0
