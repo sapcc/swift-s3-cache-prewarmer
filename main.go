@@ -49,7 +49,6 @@ func main() {
 		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{
 			InsecureSkipVerify: true,
 		}
-		http.DefaultClient.Transport = http.DefaultTransport
 	}
 
 	rootCmd := cobra.Command{
