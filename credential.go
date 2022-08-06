@@ -33,25 +33,25 @@ import (
 	"github.com/sapcc/go-bits/logg"
 )
 
-//CredentialID identifies an EC2 credential.
+// CredentialID identifies an EC2 credential.
 type CredentialID struct {
 	UserID    string
 	AccessKey string
 }
 
-//String recovers the string representation of this CredentialID.
+// String recovers the string representation of this CredentialID.
 func (cred CredentialID) String() string {
 	return fmt.Sprintf("%s:%s", cred.UserID, cred.AccessKey)
 }
 
-//CacheKey returns the key under which this credential's payload is stored in memcache.
+// CacheKey returns the key under which this credential's payload is stored in memcache.
 func (cred CredentialID) CacheKey() string {
 	rawKey := "s3secret/" + cred.AccessKey
 	hashBytes := md5.Sum([]byte(rawKey))
 	return hex.EncodeToString(hashBytes[:])
 }
 
-//AsLabels represents this credential as a set of Prometheus labels.
+// AsLabels represents this credential as a set of Prometheus labels.
 func (cred CredentialID) AsLabels() prometheus.Labels {
 	return prometheus.Labels{
 		"userid":    cred.UserID,
@@ -59,7 +59,7 @@ func (cred CredentialID) AsLabels() prometheus.Labels {
 	}
 }
 
-//MustParseCredentials parses CredentialIDs passed in as CLI arguments.
+// MustParseCredentials parses CredentialIDs passed in as CLI arguments.
 func MustParseCredentials(args []string) []CredentialID {
 	result := make([]CredentialID, len(args))
 	for idx, arg := range args {
@@ -79,19 +79,19 @@ func MustParseCredentials(args []string) []CredentialID {
 	return result
 }
 
-//CredentialPayload contains the payload for a credential which we write into memcached.
+// CredentialPayload contains the payload for a credential which we write into memcached.
 type CredentialPayload struct {
 	Headers map[string]string
 	Project tokens.Project
 	Secret  string
 }
 
-//MarshalJSON implements the json.Marshaler interface.
+// MarshalJSON implements the json.Marshaler interface.
 func (p CredentialPayload) MarshalJSON() ([]byte, error) {
 	return json.Marshal([]interface{}{p.Headers, p.Project, p.Secret})
 }
 
-//UnmarshalJSON implements the json.Marshaler interface.
+// UnmarshalJSON implements the json.Marshaler interface.
 func (p *CredentialPayload) UnmarshalJSON(buf []byte) error {
 	var fields []json.RawMessage
 	err := json.Unmarshal(buf, &fields)
@@ -117,7 +117,7 @@ func (p *CredentialPayload) UnmarshalJSON(buf []byte) error {
 	return nil
 }
 
-//EqualTo is similar to reflect.DeepEqual(), but considers some additional invariants.
+// EqualTo is similar to reflect.DeepEqual(), but considers some additional invariants.
 func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 	if (p == nil) != (other == nil) {
 		return false

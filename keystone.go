@@ -31,7 +31,7 @@ import (
 	"github.com/sapcc/go-bits/logg"
 )
 
-//MustConnectToKeystone connects to Keystone or dies trying.
+// MustConnectToKeystone connects to Keystone or dies trying.
 func MustConnectToKeystone() *gophercloud.ServiceClient {
 	provider, err := clientconfig.AuthenticatedClient(nil)
 	must("authenticate to OpenStack using OS_* environment variables", err)
@@ -40,8 +40,8 @@ func MustConnectToKeystone() *gophercloud.ServiceClient {
 	return identityV3
 }
 
-//GetCredentialFromKeystone fetches an EC2 credential from Keystone.
-//Returns nil if the credential does not exist.
+// GetCredentialFromKeystone fetches an EC2 credential from Keystone.
+// Returns nil if the credential does not exist.
 func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred CredentialID) *CredentialPayload {
 	//get secret from Keystone
 	credInfo, err := ec2credentials.Get(identityV3, cred.UserID, cred.AccessKey).Extract()

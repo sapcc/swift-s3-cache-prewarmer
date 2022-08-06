@@ -26,8 +26,8 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 )
 
-//GetCredentialFromMemcache fetches an EC2 credential from Memcache.
-//Returns nil if the credential does not exist.
+// GetCredentialFromMemcache fetches an EC2 credential from Memcache.
+// Returns nil if the credential does not exist.
 func GetCredentialFromMemcache(mc *memcache.Client, cred CredentialID) *CredentialPayload {
 	item, err := mc.Get(cred.CacheKey())
 	if err == memcache.ErrCacheMiss {
@@ -40,7 +40,7 @@ func GetCredentialFromMemcache(mc *memcache.Client, cred CredentialID) *Credenti
 	return &payload
 }
 
-//SetCredentialInMemcache writes an EC2 credential into Memcache.
+// SetCredentialInMemcache writes an EC2 credential into Memcache.
 func SetCredentialInMemcache(mc *memcache.Client, cred CredentialID, payload CredentialPayload, expiry time.Duration) {
 	buf, err := json.Marshal(payload)
 	must("encode credential payload for Memcache", err)
