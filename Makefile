@@ -31,7 +31,8 @@ else
 endif
 
 install: FORCE build/swift-s3-cache-prewarmer
-	install -D -m 0755 build/swift-s3-cache-prewarmer "$(DESTDIR)$(PREFIX)/bin/swift-s3-cache-prewarmer"
+	install -d -m 0755 "$(DESTDIR)$(PREFIX)/bin"
+	install -m 0755 build/swift-s3-cache-prewarmer "$(DESTDIR)$(PREFIX)/bin/swift-s3-cache-prewarmer"
 
 # which packages to test with "go test"
 GO_TESTPKGS := $(shell go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)
