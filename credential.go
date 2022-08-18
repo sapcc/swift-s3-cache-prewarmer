@@ -20,7 +20,7 @@
 package main
 
 import (
-	"crypto/md5"
+	"crypto/md5" //nolint:gosec // used in a none security relevant way
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -47,7 +47,7 @@ func (cred CredentialID) String() string {
 // CacheKey returns the key under which this credential's payload is stored in memcache.
 func (cred CredentialID) CacheKey() string {
 	rawKey := "s3secret/" + cred.AccessKey
-	hashBytes := md5.Sum([]byte(rawKey))
+	hashBytes := md5.Sum([]byte(rawKey)) //nolint:gosec // only used as an identification key
 	return hex.EncodeToString(hashBytes[:])
 }
 
@@ -150,7 +150,7 @@ func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 	return reflect.DeepEqual(p, rhs)
 }
 
-func sortCommaSeparatedLikeInReference(input string, reference string) string {
+func sortCommaSeparatedLikeInReference(input, reference string) string {
 	refFieldIndex := make(map[string]int)
 	for idx, field := range strings.Split(reference, ",") {
 		refFieldIndex[field] = idx
