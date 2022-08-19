@@ -22,7 +22,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -33,6 +32,7 @@ import (
 	"github.com/gophercloud/gophercloud"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/sapcc/go-api-declarations/bininfo"
 	"github.com/sapcc/go-bits/httpext"
 	"github.com/sapcc/go-bits/logg"
 	"github.com/spf13/cobra"
@@ -44,12 +44,9 @@ var flagPromListenAddress string
 var flagMemcacheServers []string
 
 func main() {
-	//when behind a mitmproxy, skip certificate validation
-	if os.Getenv("HTTPS_PROXY") != "" {
-		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true, //nolint:gosec // only used in development environments
-		}
-	}
+	wrap := httpext.WrapTransport(&http.DefaultTransport)
+	wrap.SetInsecureSkipVerify(os.Getenv("HTTPS_PROXY") != "") //skip cert validation when behind mitmproxy (DO NOT SET IN PRODUCTION)
+	wrap.SetOverrideUserAgent(bininfo.Component(), bininfo.VersionOr("rolling"))
 
 	rootCmd := cobra.Command{
 		Use:   "swift-s3-cache-prewarmer",
