@@ -47,7 +47,7 @@ func (cred CredentialID) String() string {
 // CacheKey returns the key under which this credential's payload is stored in memcache.
 func (cred CredentialID) CacheKey() string {
 	rawKey := "s3secret/" + cred.AccessKey
-	hashBytes := md5.Sum([]byte(rawKey)) //nolint:gosec // only used as an identification key
+	hashBytes := md5.Sum([]byte(rawKey)) //nolint:gosec // input cannot be chosen by the user
 	return hex.EncodeToString(hashBytes[:])
 }
 
