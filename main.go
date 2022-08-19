@@ -47,7 +47,7 @@ func main() {
 	//when behind a mitmproxy, skip certificate validation
 	if os.Getenv("HTTPS_PROXY") != "" {
 		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true,
+			InsecureSkipVerify: true, //nolint:gosec // only used in development environments
 		}
 	}
 
