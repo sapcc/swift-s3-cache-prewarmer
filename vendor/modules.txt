@@ -11,7 +11,7 @@ github.com/cespare/xxhash/v2
 ## explicit; go 1.9
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes/timestamp
-# github.com/gophercloud/gophercloud v0.25.0
+# github.com/gophercloud/gophercloud v1.0.0
 ## explicit; go 1.14
 github.com/gophercloud/gophercloud
 github.com/gophercloud/gophercloud/openstack
@@ -59,7 +59,7 @@ github.com/prometheus/procfs/internal/util
 # github.com/sapcc/go-api-declarations v1.3.0
 ## explicit; go 1.19
 github.com/sapcc/go-api-declarations/bininfo
-# github.com/sapcc/go-bits v0.0.0-20220824125308-0be4a179e36c
+# github.com/sapcc/go-bits v0.0.0-20220829144248-42b88f9c5789
 ## explicit; go 1.19
 github.com/sapcc/go-bits/httpext
 github.com/sapcc/go-bits/logg

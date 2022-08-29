@@ -4,11 +4,11 @@ go 1.19
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d
-	github.com/gophercloud/gophercloud v0.25.0
+	github.com/gophercloud/gophercloud v1.0.0
 	github.com/gophercloud/utils v0.0.0-20220704184730-55bdbbaec4ba
 	github.com/prometheus/client_golang v1.13.0
 	github.com/sapcc/go-api-declarations v1.3.0
-	github.com/sapcc/go-bits v0.0.0-20220824125308-0be4a179e36c
+	github.com/sapcc/go-bits v0.0.0-20220829144248-42b88f9c5789
 	github.com/spf13/cobra v1.5.0
 )
 

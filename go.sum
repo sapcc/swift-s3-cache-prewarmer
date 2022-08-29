@@ -127,8 +127,8 @@ github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm4
 github.com/googleapis/gax-go/v2 v2.0.4/go.mod h1:0Wqv26UfaUD9n4G6kQubkQ+KchISgw+vpHVxEJEs9eg=
 github.com/googleapis/gax-go/v2 v2.0.5/go.mod h1:DWXyrwAJ9X0FpwwEdw+IPEYBICEFu5mhpdKc/us6bOk=
 github.com/gophercloud/gophercloud v0.20.0/go.mod h1:wRtmUelyIIv3CSSDI47aUwbs075O6i+LY+pXsKCBsb4=
-github.com/gophercloud/gophercloud v0.25.0 h1:C3Oae7y0fUVQGSsBrb3zliAjdX+riCSEh4lNMejFNI4=
-github.com/gophercloud/gophercloud v0.25.0/go.mod h1:Q8fZtyi5zZxPS/j9aj3sSxtvj41AdQMDwyo1myduD5c=
+github.com/gophercloud/gophercloud v1.0.0 h1:9nTGx0jizmHxDobe4mck89FyQHVyA3CaXLIUSGJjP9k=
+github.com/gophercloud/gophercloud v1.0.0/go.mod h1:Q8fZtyi5zZxPS/j9aj3sSxtvj41AdQMDwyo1myduD5c=
 github.com/gophercloud/utils v0.0.0-20220704184730-55bdbbaec4ba h1:PTa/ilBNI0ZE2WjSnu4drZi7W81wkYjnHPk5AEEgOGk=
 github.com/gophercloud/utils v0.0.0-20220704184730-55bdbbaec4ba/go.mod h1:qOGlfG6OIJ193/c3Xt/XjOfHataNZdQcVgiu93LxBUM=
 github.com/hashicorp/go-uuid v1.0.2/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
@@ -199,8 +199,8 @@ github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/sapcc/go-api-declarations v1.3.0 h1:4FMj0UR+Pydil1cpIewa068w/55mqvg3+/ILy3hGQ0g=
 github.com/sapcc/go-api-declarations v1.3.0/go.mod h1:EA4x5xxJGyG/3JTteUOYBg6cJLJgsBHrDj3ryfNU4dQ=
-github.com/sapcc/go-bits v0.0.0-20220824125308-0be4a179e36c h1:gVpEnMaiXUIjeNK6PKPI5ZOJr5wozMD3vn+C064e0W8=
-github.com/sapcc/go-bits v0.0.0-20220824125308-0be4a179e36c/go.mod h1:Nysm5NczZEy/rshqTvu4vJTyKvaCJHIPKw3aaimvJfk=
+github.com/sapcc/go-bits v0.0.0-20220829144248-42b88f9c5789 h1:QaX0AOBJ4E0lygv1ZeQHLf7eFcDccqjR9t0vub/pBaQ=
+github.com/sapcc/go-bits v0.0.0-20220829144248-42b88f9c5789/go.mod h1:Ob2M62l/DMgePFdnMSMrUR7ljoMGtqoyE0gzvrWD6PM=
 github.com/sergi/go-diff v1.2.0 h1:XU+rvMAioB0UC3q1MFrIQy4Vo5/4VsRDQQXHsEya6xQ=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
