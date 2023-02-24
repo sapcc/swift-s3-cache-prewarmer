@@ -33,17 +33,17 @@ func GetCredentialFromMemcache(mc *memcache.Client, cred CredentialID) *Credenti
 	if err == memcache.ErrCacheMiss {
 		return nil
 	}
-	must("fetch credential from Memcache", err)
+	mustDo("fetch credential from Memcache", err)
 
 	var payload CredentialPayload
-	must("decode credential payload from Memcache", json.Unmarshal(item.Value, &payload))
+	mustDo("decode credential payload from Memcache", json.Unmarshal(item.Value, &payload))
 	return &payload
 }
 
 // SetCredentialInMemcache writes an EC2 credential into Memcache.
 func SetCredentialInMemcache(mc *memcache.Client, cred CredentialID, payload CredentialPayload, expiry time.Duration) {
 	buf, err := json.Marshal(payload)
-	must("encode credential payload for Memcache", err)
+	mustDo("encode credential payload for Memcache", err)
 
 	err = mc.Set(&memcache.Item{
 		Key:        cred.CacheKey(),
@@ -51,5 +51,5 @@ func SetCredentialInMemcache(mc *memcache.Client, cred CredentialID, payload Cre
 		Flags:      2, //indicates data type JSON within Swift
 		Expiration: int32(expiry.Seconds()),
 	})
-	must("save credential payload in Memcache", err)
+	mustDo("save credential payload in Memcache", err)
 }

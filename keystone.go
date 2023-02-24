@@ -34,9 +34,9 @@ import (
 // MustConnectToKeystone connects to Keystone or dies trying.
 func MustConnectToKeystone() *gophercloud.ServiceClient {
 	provider, err := clientconfig.AuthenticatedClient(nil)
-	must("authenticate to OpenStack using OS_* environment variables", err)
+	mustDo("authenticate to OpenStack using OS_* environment variables", err)
 	identityV3, err := openstack.NewIdentityV3(provider, eo)
-	must("select OpenStack Identity V3 endpoint", err)
+	mustDo("select OpenStack Identity V3 endpoint", err)
 	return identityV3
 }
 
@@ -49,7 +49,7 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 		logg.Info("skipping credential %q: not found in Keystone", cred.String())
 		return nil
 	}
-	must(fmt.Sprintf(`lookup EC2 credential %q in Keystone`, cred.String()), err)
+	mustDo(fmt.Sprintf(`lookup EC2 credential %q in Keystone`, cred.String()), err)
 
 	//login with this credential to get further information
 	result := ec2tokens.Create(identityV3, &ec2tokens.AuthOptions{
@@ -60,15 +60,15 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 		logg.Info("skipping credential %q: authorization failed", cred.String())
 		return nil
 	}
-	must(fmt.Sprintf(`login as EC2 credential %q in Keystone`, cred.String()), err)
+	mustDo(fmt.Sprintf(`login as EC2 credential %q in Keystone`, cred.String()), err)
 
 	//convert into the payload format used by the token cache
 	project, err := result.ExtractProject()
-	must(fmt.Sprintf("extract project data for EC2 credential %q", cred.String()), err)
+	mustDo(fmt.Sprintf("extract project data for EC2 credential %q", cred.String()), err)
 	user, err := result.ExtractUser()
-	must(fmt.Sprintf("extract user data for EC2 credential %q", cred.String()), err)
+	mustDo(fmt.Sprintf("extract user data for EC2 credential %q", cred.String()), err)
 	roles, err := result.ExtractRoles()
-	must(fmt.Sprintf("extract role data for EC2 credential %q", cred.String()), err)
+	mustDo(fmt.Sprintf("extract role data for EC2 credential %q", cred.String()), err)
 	roleNames := make([]string, len(roles))
 	for idx, role := range roles {
 		roleNames[idx] = role.Name
@@ -91,5 +91,11 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 		},
 		Project: *project,
 		Secret:  credInfo.Secret,
+	}
+}
+
+func mustDo(action string, err error) {
+	if err != nil {
+		logg.Fatal("%s: %v", action, err)
 	}
 }
