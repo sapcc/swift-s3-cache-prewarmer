@@ -20,7 +20,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -35,6 +34,7 @@ import (
 	"github.com/sapcc/go-api-declarations/bininfo"
 	"github.com/sapcc/go-bits/httpext"
 	"github.com/sapcc/go-bits/logg"
+	"github.com/sapcc/go-bits/must"
 	"github.com/spf13/cobra"
 )
 
@@ -143,14 +143,9 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	//expose Prometheus metrics
 	prometheus.MustRegister(prewarmTimestampSecsGauge)
 	prometheus.MustRegister(prewarmDurationSecsGauge)
+	http.Handle("/metrics", promhttp.Handler())
 	ctx := httpext.ContextWithSIGINT(context.Background(), 1*time.Second)
-	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		err := httpext.ListenAndServeContext(ctx, flagPromListenAddress, nil)
-		if err != nil {
-			logg.Fatal("error returned from httpext.ListenAndServeContext(): %s", err.Error())
-		}
-	}()
+	go must.Succeed(httpext.ListenAndServeContext(ctx, flagPromListenAddress, nil))
 	//make sure that all swift_s3_cache_prewarm_last_run_secs timeseries exist,
 	//even if prewarm never succeeds
 	for _, cred := range creds {
@@ -209,16 +204,7 @@ func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient,
 	}
 }
 
-func must(action string, err error) {
-	if err != nil {
-		logg.Fatal("%s: %v", action, err)
-	}
-}
-
 func printAsJSON(val interface{}) {
-	buf1, err := json.Marshal(val)
-	must("serialize to JSON", err)
-	var buf2 bytes.Buffer
-	must("pretty-print JSON", json.Indent(&buf2, buf1, "", "  "))
-	fmt.Println(buf2.String())
+	buf := must.Return(json.MarshalIndent(val, "", "  "))
+	fmt.Println(string(buf))
 }
