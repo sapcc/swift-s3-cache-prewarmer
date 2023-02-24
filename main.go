@@ -145,7 +145,9 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	prometheus.MustRegister(prewarmDurationSecsGauge)
 	http.Handle("/metrics", promhttp.Handler())
 	ctx := httpext.ContextWithSIGINT(context.Background(), 1*time.Second)
-	go must.Succeed(httpext.ListenAndServeContext(ctx, flagPromListenAddress, nil))
+	go func() {
+		must.Succeed(httpext.ListenAndServeContext(ctx, flagPromListenAddress, nil))
+	}()
 	//make sure that all swift_s3_cache_prewarm_last_run_secs timeseries exist,
 	//even if prewarm never succeeds
 	for _, cred := range creds {
