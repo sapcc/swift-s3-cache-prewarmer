@@ -8,9 +8,6 @@ binaries:
     fromPackage: .
     installTo:   bin/
 
-vendoring:
-  enabled: true
-
 dockerfile:
   enabled: true
 
@@ -21,9 +18,6 @@ golangciLint:
 
 githubWorkflow:
   global:
-    assignees:
-      - majewsky
-      - SuperSandro2000
     ignorePaths: [ "**.md" ] # all Markdown files
   ci:
     enabled: true
@@ -37,4 +31,10 @@ githubWorkflow:
     ignorePaths: [] # override global setting so that nothing is ignored
 
 renovate:
+  enabled: true
+  assignees:
+    - majewsky
+    - SuperSandro2000
+
+vendoring:
   enabled: true
