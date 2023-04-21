@@ -7,8 +7,8 @@ require (
 	github.com/gophercloud/gophercloud v1.3.0
 	github.com/gophercloud/utils v0.0.0-20230330070308-5bd5e1d608f8
 	github.com/prometheus/client_golang v1.15.0
-	github.com/sapcc/go-api-declarations v1.5.0
-	github.com/sapcc/go-bits v0.0.0-20230413144132-bee3aa4c8293
+	github.com/sapcc/go-api-declarations v1.5.1
+	github.com/sapcc/go-bits v0.0.0-20230420083834-e3870701a14b
 	github.com/spf13/cobra v1.7.0
 )
 
@@ -23,7 +23,6 @@ require (
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
-	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
