@@ -36,6 +36,7 @@ import (
 	"github.com/sapcc/go-bits/logg"
 	"github.com/sapcc/go-bits/must"
 	"github.com/spf13/cobra"
+	"go.uber.org/automaxprocs/maxprocs"
 )
 
 var flagConservative bool
@@ -44,6 +45,10 @@ var flagPromListenAddress string
 var flagMemcacheServers []string
 
 func main() {
+	logg.ShowDebug = osext.GetenvOrBool("SWIFT_S3CP_DEBUG")
+	undoMaxprocs := must.Return(maxprocs.Set(maxprocs.Logger(logg.Debug)))
+	defer undoMaxprocs()
+
 	wrap := httpext.WrapTransport(&http.DefaultTransport)
 	wrap.SetInsecureSkipVerify(os.Getenv("HTTPS_PROXY") != "") //skip cert validation when behind mitmproxy (DO NOT SET IN PRODUCTION)
 	wrap.SetOverrideUserAgent(bininfo.Component(), bininfo.VersionOr("rolling"))
