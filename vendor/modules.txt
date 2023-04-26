@@ -69,6 +69,7 @@ github.com/sapcc/go-api-declarations/bininfo
 github.com/sapcc/go-bits/httpext
 github.com/sapcc/go-bits/logg
 github.com/sapcc/go-bits/must
+github.com/sapcc/go-bits/osext
 # github.com/spf13/cobra v1.7.0
 ## explicit; go 1.15
 github.com/spf13/cobra

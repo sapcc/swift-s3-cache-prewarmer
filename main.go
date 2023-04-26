@@ -35,6 +35,7 @@ import (
 	"github.com/sapcc/go-bits/httpext"
 	"github.com/sapcc/go-bits/logg"
 	"github.com/sapcc/go-bits/must"
+	"github.com/sapcc/go-bits/osext"
 	"github.com/spf13/cobra"
 	"go.uber.org/automaxprocs/maxprocs"
 )
@@ -45,7 +46,7 @@ var flagPromListenAddress string
 var flagMemcacheServers []string
 
 func main() {
-	logg.ShowDebug = osext.GetenvOrBool("SWIFT_S3CP_DEBUG")
+	logg.ShowDebug = osext.GetenvBool("SWIFT_S3CP_DEBUG")
 	undoMaxprocs := must.Return(maxprocs.Set(maxprocs.Logger(logg.Debug)))
 	defer undoMaxprocs()
 
