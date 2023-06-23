@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20230611145640-acc696258285
-	github.com/gophercloud/gophercloud v1.4.0
+	github.com/gophercloud/gophercloud v1.5.0
 	github.com/gophercloud/utils v0.0.0-20230523080330-de873b9cf00d
 	github.com/prometheus/client_golang v1.16.0
 	github.com/sapcc/go-api-declarations v1.6.0
