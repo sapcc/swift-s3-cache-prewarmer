@@ -21,6 +21,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
@@ -30,7 +31,7 @@ import (
 // Returns nil if the credential does not exist.
 func GetCredentialFromMemcache(mc *memcache.Client, cred CredentialID) *CredentialPayload {
 	item, err := mc.Get(cred.CacheKey())
-	if err == memcache.ErrCacheMiss {
+	if errors.Is(err, memcache.ErrCacheMiss) {
 		return nil
 	}
 	mustDo("fetch credential from Memcache", err)

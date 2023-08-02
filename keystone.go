@@ -45,6 +45,7 @@ func MustConnectToKeystone() *gophercloud.ServiceClient {
 func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred CredentialID) *CredentialPayload {
 	//get secret from Keystone
 	credInfo, err := ec2credentials.Get(identityV3, cred.UserID, cred.AccessKey).Extract()
+	//nolint:errorlint // not applicable
 	if _, ok := err.(gophercloud.ErrDefault404); ok {
 		logg.Info("skipping credential %q: not found in Keystone", cred.String())
 		return nil
@@ -56,6 +57,7 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 		Access: cred.AccessKey,
 		Secret: credInfo.Secret,
 	})
+	//nolint:errorlint // not applicable
 	if _, ok := err.(gophercloud.ErrDefault401); ok {
 		logg.Info("skipping credential %q: authorization failed", cred.String())
 		return nil
