@@ -43,8 +43,8 @@ github.com/rogpeppe/go-internal v1.10.0 h1:TMyTOH3F/DB16zRVcYyreMH6GnZZrwQVAoYjR
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/sapcc/go-api-declarations v1.7.0 h1:fABKw/dw300ZQ5TKEjVnKPqMSH5aCOSbJ06XnfWtpuw=
 github.com/sapcc/go-api-declarations v1.7.0/go.mod h1:3OCDo75YJwpytM/I0SjwcZJf1ZNu89KeAZ55kdOTSqE=
-github.com/sapcc/go-bits v0.0.0-20230714164034-847bf6682d87 h1:ppSuC8bMkGSmvX5waZLwUrXIt1amgKyQ8etyaZO7b/c=
-github.com/sapcc/go-bits v0.0.0-20230714164034-847bf6682d87/go.mod h1:J/Q/o/JysipZxYy4p4Os1FZhxgKw53Dw68Y5e6c4IbE=
+github.com/sapcc/go-bits v0.0.0-20230803115409-d2170ecbba46 h1:U9o4Aj5/VyljWdSyw2292cCJelSQdsOijCFt9IExMJ4=
+github.com/sapcc/go-bits v0.0.0-20230803115409-d2170ecbba46/go.mod h1:J/Q/o/JysipZxYy4p4Os1FZhxgKw53Dw68Y5e6c4IbE=
 github.com/sergi/go-diff v1.3.1 h1:xkr+Oxo4BOQKmkn/B9eMK0g5Kg/983T9DqqPHwYqD+8=
 github.com/spf13/cobra v1.7.0 h1:hyqWnYt1ZQShIddO5kBpj3vu05/++x6tJ6dg8EC572I=
 github.com/spf13/cobra v1.7.0/go.mod h1:uLxZILRyS/50WlhOIKD7W6V5bgeIt+4sICxh6uRMrb0=

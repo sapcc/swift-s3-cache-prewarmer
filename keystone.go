@@ -28,6 +28,7 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2credentials"
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2tokens"
 	"github.com/gophercloud/utils/openstack/clientconfig"
+	"github.com/sapcc/go-bits/errext"
 	"github.com/sapcc/go-bits/logg"
 )
 
@@ -45,8 +46,7 @@ func MustConnectToKeystone() *gophercloud.ServiceClient {
 func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred CredentialID) *CredentialPayload {
 	//get secret from Keystone
 	credInfo, err := ec2credentials.Get(identityV3, cred.UserID, cred.AccessKey).Extract()
-	//nolint:errorlint // not applicable
-	if _, ok := err.(gophercloud.ErrDefault404); ok {
+	if errext.IsOfType[gophercloud.ErrDefault404](err) {
 		logg.Info("skipping credential %q: not found in Keystone", cred.String())
 		return nil
 	}
@@ -57,8 +57,7 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 		Access: cred.AccessKey,
 		Secret: credInfo.Secret,
 	})
-	//nolint:errorlint // not applicable
-	if _, ok := err.(gophercloud.ErrDefault401); ok {
+	if errext.IsOfType[gophercloud.ErrDefault401](err) {
 		logg.Info("skipping credential %q: authorization failed", cred.String())
 		return nil
 	}
