@@ -11,6 +11,10 @@ binaries:
 dockerfile:
   enabled: true
 
+golang:
+  enableVendoring: true
+  setGoModVersion: true
+
 golangciLint:
   createConfig: true
   errcheckExcludes:
@@ -33,6 +37,3 @@ renovate:
   assignees:
     - majewsky
     - SuperSandro2000
-
-vendoring:
-  enabled: true
