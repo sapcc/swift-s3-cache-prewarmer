@@ -8,7 +8,7 @@ require (
 	github.com/gophercloud/utils v0.0.0-20231010081019-80377eca5d56
 	github.com/prometheus/client_golang v1.17.0
 	github.com/sapcc/go-api-declarations v1.10.3
-	github.com/sapcc/go-bits v0.0.0-20231106151414-f5f780233936
+	github.com/sapcc/go-bits v0.0.0-20231114102838-b69ff7fedd7f
 	github.com/spf13/cobra v1.8.0
 	go.uber.org/automaxprocs v1.5.3
 )
