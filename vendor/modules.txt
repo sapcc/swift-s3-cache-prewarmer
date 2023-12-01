@@ -7,7 +7,7 @@ github.com/bradfitz/gomemcache/memcache
 # github.com/cespare/xxhash/v2 v2.2.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
-# github.com/gophercloud/gophercloud v1.7.0
+# github.com/gophercloud/gophercloud v1.8.0
 ## explicit; go 1.14
 github.com/gophercloud/gophercloud
 github.com/gophercloud/gophercloud/openstack
@@ -60,7 +60,7 @@ github.com/prometheus/procfs/internal/util
 # github.com/sapcc/go-api-declarations v1.10.3
 ## explicit; go 1.21
 github.com/sapcc/go-api-declarations/bininfo
-# github.com/sapcc/go-bits v0.0.0-20231114102838-b69ff7fedd7f
+# github.com/sapcc/go-bits v0.0.0-20231130134726-6ee9377708fc
 ## explicit; go 1.21
 github.com/sapcc/go-bits/errext
 github.com/sapcc/go-bits/httpext
