@@ -49,7 +49,7 @@ func SetCredentialInMemcache(mc *memcache.Client, cred CredentialID, payload Cre
 	err = mc.Set(&memcache.Item{
 		Key:        cred.CacheKey(),
 		Value:      buf,
-		Flags:      2, //indicates data type JSON within Swift
+		Flags:      2, // indicates data type JSON within Swift
 		Expiration: int32(expiry.Seconds()),
 	})
 	mustDo("save credential payload in Memcache", err)

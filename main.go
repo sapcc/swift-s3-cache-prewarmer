@@ -51,7 +51,7 @@ func main() {
 	defer undoMaxprocs()
 
 	wrap := httpext.WrapTransport(&http.DefaultTransport)
-	wrap.SetInsecureSkipVerify(os.Getenv("HTTPS_PROXY") != "") //skip cert validation when behind mitmproxy (DO NOT SET IN PRODUCTION)
+	wrap.SetInsecureSkipVerify(os.Getenv("HTTPS_PROXY") != "") // skip cert validation when behind mitmproxy (DO NOT SET IN PRODUCTION)
 	wrap.SetOverrideUserAgent(bininfo.Component(), bininfo.VersionOr("rolling"))
 
 	rootCmd := cobra.Command{
@@ -96,14 +96,14 @@ func main() {
 	rootCmd.AddCommand(&prewarmCmd)
 
 	if err := rootCmd.Execute(); err != nil {
-		//the error was already printed by Execute()
-		os.Exit(1)
+		// the error was already printed by Execute()
+		os.Exit(1) //nolint:gocritic // undomacprocs is not critical to be run
 	}
 }
 
 var eo = gophercloud.EndpointOpts{
-	Availability: gophercloud.Availability(os.Getenv("OS_INTERFACE")), //defaults to "public" when empty
-	Region:       os.Getenv("OS_REGION_NAME"),                         //defaults to empty which is okay
+	Availability: gophercloud.Availability(os.Getenv("OS_INTERFACE")), // defaults to "public" when empty
+	Region:       os.Getenv("OS_REGION_NAME"),                         // defaults to empty which is okay
 }
 
 func runCheckKeystone(cmd *cobra.Command, args []string) {
@@ -146,7 +146,7 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	identityV3 := MustConnectToKeystone()
 	mc := memcache.New(flagMemcacheServers...)
 
-	//expose Prometheus metrics
+	// expose Prometheus metrics
 	prometheus.MustRegister(prewarmTimestampSecsGauge)
 	prometheus.MustRegister(prewarmDurationSecsGauge)
 	mux := http.NewServeMux()
@@ -155,8 +155,8 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	go func() {
 		must.Succeed(httpext.ListenAndServeContext(ctx, flagPromListenAddress, mux))
 	}()
-	//make sure that all swift_s3_cache_prewarm_last_run_secs timeseries exist,
-	//even if prewarm never succeeds
+	// make sure that all swift_s3_cache_prewarm_last_run_secs timeseries exist,
+	// even if prewarm never succeeds
 	for _, cred := range creds {
 		prewarmTimestampSecsGauge.With(cred.AsLabels()).Set(0)
 	}
@@ -164,13 +164,13 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	cycleLength := flagExpiryTime / 5
 	tick := time.Tick(cycleLength)
 
-	//do the first prewarm immediately
+	// do the first prewarm immediately
 	doPrewarmCycle(creds, identityV3, mc)
 
 	for {
 		select {
 		case <-ctx.Done():
-			//exit if SIGINT was received
+			// exit if SIGINT was received
 			return
 		case <-tick:
 			doPrewarmCycle(creds, identityV3, mc)
@@ -182,15 +182,15 @@ func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient,
 	for _, cred := range creds {
 		prewarmStart := time.Now()
 
-		//get new payload from Keystone
+		// get new payload from Keystone
 		payload := GetCredentialFromKeystone(identityV3, cred)
 		if payload == nil {
-			//there was a problem getting the payload - we already logged the
-			//reason and can directly move on
+			// there was a problem getting the payload - we already logged the
+			// reason and can directly move on
 			continue
 		}
 
-		//double-check with Memcache if requested
+		// double-check with Memcache if requested
 		if flagConservative {
 			cachedPayload := GetCredentialFromMemcache(mc, cred)
 			// Accept a not yet cached credential in conservative mode to get it into the cache
@@ -200,12 +200,12 @@ func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient,
 			}
 		}
 
-		//write payload into Memcache (or, if the payload has not changed, just
-		//update the expiration time)
+		// write payload into Memcache (or, if the payload has not changed, just
+		// update the expiration time)
 		SetCredentialInMemcache(mc, cred, *payload, flagExpiryTime)
 		logg.Info("credential %q was prewarmed", cred.String())
 
-		//report Prometheus metrics for this prewarm run
+		// report Prometheus metrics for this prewarm run
 		prewarmEnd := time.Now()
 		labels := cred.AsLabels()
 		prewarmTimestampSecsGauge.With(labels).Set(float64(prewarmEnd.Unix()))

@@ -44,7 +44,7 @@ func MustConnectToKeystone() *gophercloud.ServiceClient {
 // GetCredentialFromKeystone fetches an EC2 credential from Keystone.
 // Returns nil if the credential does not exist.
 func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred CredentialID) *CredentialPayload {
-	//get secret from Keystone
+	// get secret from Keystone
 	credInfo, err := ec2credentials.Get(identityV3, cred.UserID, cred.AccessKey).Extract()
 	if errext.IsOfType[gophercloud.ErrDefault404](err) {
 		logg.Info("skipping credential %q: not found in Keystone", cred.String())
@@ -52,7 +52,7 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 	}
 	mustDo(fmt.Sprintf(`lookup EC2 credential %q in Keystone`, cred.String()), err)
 
-	//login with this credential to get further information
+	// login with this credential to get further information
 	result := ec2tokens.Create(identityV3, &ec2tokens.AuthOptions{
 		Access: cred.AccessKey,
 		Secret: credInfo.Secret,
@@ -63,7 +63,7 @@ func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred Crede
 	}
 	mustDo(fmt.Sprintf(`login as EC2 credential %q in Keystone`, cred.String()), err)
 
-	//convert into the payload format used by the token cache
+	// convert into the payload format used by the token cache
 	project, err := result.ExtractProject()
 	mustDo(fmt.Sprintf("extract project data for EC2 credential %q", cred.String()), err)
 	user, err := result.ExtractUser()

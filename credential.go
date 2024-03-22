@@ -123,12 +123,12 @@ func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 		return false
 	}
 	if p == nil {
-		//therefore also `other == nil`
+		// therefore also `other == nil`
 		return true
 	}
-	//Now we know that `p != nil && other != nil`.
+	// Now we know that `p != nil && other != nil`.
 
-	//make a deep copy of the RHS
+	// make a deep copy of the RHS
 	rhs := &CredentialPayload{
 		Headers: make(map[string]string, len(other.Headers)),
 		Project: other.Project,
@@ -138,9 +138,9 @@ func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 		rhs.Headers[k] = v
 	}
 
-	//the one thing that makes this function different from a plain
-	//reflect.DeepEqual(): Headers["X-Roles"] is a comma-separated list
-	//where ordering does not matter
+	// the one thing that makes this function different from a plain
+	// reflect.DeepEqual(): Headers["X-Roles"] is a comma-separated list
+	// where ordering does not matter
 	lhsRoles := p.Headers["X-Roles"]
 	rhsRoles := rhs.Headers["X-Roles"]
 	if lhsRoles != "" && rhsRoles != "" {

@@ -23,7 +23,7 @@ import "testing"
 
 func TestSortCommaSeparated(t *testing.T) {
 	testCases := [][]string{
-		//We test that:
+		// We test that:
 		//- Inside each list, all elements are identical except for field sorting.
 		//- But each two elements from different lists are different.
 		{"foo,bar,qux", "foo,qux,bar", "bar,foo,qux", "bar,qux,foo", "qux,bar,foo", "qux,foo,bar"},
@@ -32,7 +32,7 @@ func TestSortCommaSeparated(t *testing.T) {
 		{"foo,", ",foo"},
 	}
 
-	//inside each list in `testCases`, all elements are identical except for field sorting...
+	// inside each list in `testCases`, all elements are identical except for field sorting...
 	for _, samples := range testCases {
 		for _, reference := range samples {
 			for _, input := range samples {
@@ -44,7 +44,7 @@ func TestSortCommaSeparated(t *testing.T) {
 		}
 	}
 
-	//but any two elements from different lists may not be identical
+	// but any two elements from different lists may not be identical
 	for i, references := range testCases {
 		for j, inputs := range testCases {
 			if i == j {
