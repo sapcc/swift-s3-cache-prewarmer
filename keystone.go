@@ -20,21 +20,22 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
-	"github.com/gophercloud/gophercloud"
-	"github.com/gophercloud/gophercloud/openstack"
-	"github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2credentials"
-	"github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2tokens"
-	"github.com/gophercloud/utils/openstack/clientconfig"
-	"github.com/sapcc/go-bits/errext"
+	"github.com/gophercloud/gophercloud/v2"
+	"github.com/gophercloud/gophercloud/v2/openstack"
+	"github.com/gophercloud/gophercloud/v2/openstack/identity/v3/ec2credentials"
+	"github.com/gophercloud/gophercloud/v2/openstack/identity/v3/ec2tokens"
+	"github.com/gophercloud/utils/v2/openstack/clientconfig"
 	"github.com/sapcc/go-bits/logg"
 )
 
 // MustConnectToKeystone connects to Keystone or dies trying.
-func MustConnectToKeystone() *gophercloud.ServiceClient {
-	provider, err := clientconfig.AuthenticatedClient(nil)
+func MustConnectToKeystone(ctx context.Context) *gophercloud.ServiceClient {
+	provider, err := clientconfig.AuthenticatedClient(ctx, nil)
 	mustDo("authenticate to OpenStack using OS_* environment variables", err)
 	identityV3, err := openstack.NewIdentityV3(provider, eo)
 	mustDo("select OpenStack Identity V3 endpoint", err)
@@ -43,21 +44,21 @@ func MustConnectToKeystone() *gophercloud.ServiceClient {
 
 // GetCredentialFromKeystone fetches an EC2 credential from Keystone.
 // Returns nil if the credential does not exist.
-func GetCredentialFromKeystone(identityV3 *gophercloud.ServiceClient, cred CredentialID) *CredentialPayload {
+func GetCredentialFromKeystone(ctx context.Context, identityV3 *gophercloud.ServiceClient, cred CredentialID) *CredentialPayload {
 	// get secret from Keystone
-	credInfo, err := ec2credentials.Get(identityV3, cred.UserID, cred.AccessKey).Extract()
-	if errext.IsOfType[gophercloud.ErrDefault404](err) {
+	credInfo, err := ec2credentials.Get(ctx, identityV3, cred.UserID, cred.AccessKey).Extract()
+	if gophercloud.ResponseCodeIs(err, http.StatusNotFound) {
 		logg.Info("skipping credential %q: not found in Keystone", cred.String())
 		return nil
 	}
 	mustDo(fmt.Sprintf(`lookup EC2 credential %q in Keystone`, cred.String()), err)
 
 	// login with this credential to get further information
-	result := ec2tokens.Create(identityV3, &ec2tokens.AuthOptions{
+	result := ec2tokens.Create(ctx, identityV3, &ec2tokens.AuthOptions{
 		Access: cred.AccessKey,
 		Secret: credInfo.Secret,
 	})
-	if errext.IsOfType[gophercloud.ErrDefault401](err) {
+	if gophercloud.ResponseCodeIs(err, http.StatusUnauthorized) {
 		logg.Info("skipping credential %q: authorization failed", cred.String())
 		return nil
 	}
