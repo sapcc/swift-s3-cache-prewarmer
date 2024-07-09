@@ -28,7 +28,7 @@ import (
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/gophercloud/gophercloud"
+	"github.com/gophercloud/gophercloud/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sapcc/go-api-declarations/bininfo"
@@ -95,7 +95,8 @@ func main() {
 	prewarmCmd.Flags().StringVar(&flagPromListenAddress, "listen", "localhost:8080", "Listen address for HTTP server exposing Prometheus metrics.")
 	rootCmd.AddCommand(&prewarmCmd)
 
-	if err := rootCmd.Execute(); err != nil {
+	ctx := httpext.ContextWithSIGINT(context.Background(), 1*time.Second)
+	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		// the error was already printed by Execute()
 		os.Exit(1) //nolint:gocritic // undomacprocs is not critical to be run
 	}
@@ -108,10 +109,10 @@ var eo = gophercloud.EndpointOpts{
 
 func runCheckKeystone(cmd *cobra.Command, args []string) {
 	creds := MustParseCredentials(args)
-	identityV3 := MustConnectToKeystone()
+	identityV3 := MustConnectToKeystone(cmd.Context())
 
 	for _, cred := range creds {
-		printAsJSON(GetCredentialFromKeystone(identityV3, cred))
+		printAsJSON(GetCredentialFromKeystone(cmd.Context(), identityV3, cred))
 	}
 }
 
@@ -142,8 +143,9 @@ var (
 )
 
 func runPrewarm(cmd *cobra.Command, args []string) {
+	ctx := cmd.Context()
 	creds := MustParseCredentials(args)
-	identityV3 := MustConnectToKeystone()
+	identityV3 := MustConnectToKeystone(ctx)
 	mc := memcache.New(flagMemcacheServers...)
 
 	// expose Prometheus metrics
@@ -151,7 +153,6 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	prometheus.MustRegister(prewarmDurationSecsGauge)
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", promhttp.Handler())
-	ctx := httpext.ContextWithSIGINT(context.Background(), 1*time.Second)
 	go func() {
 		must.Succeed(httpext.ListenAndServeContext(ctx, flagPromListenAddress, mux))
 	}()
@@ -165,7 +166,7 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 	tick := time.Tick(cycleLength)
 
 	// do the first prewarm immediately
-	doPrewarmCycle(creds, identityV3, mc)
+	doPrewarmCycle(ctx, creds, identityV3, mc)
 
 	for {
 		select {
@@ -173,17 +174,17 @@ func runPrewarm(cmd *cobra.Command, args []string) {
 			// exit if SIGINT was received
 			return
 		case <-tick:
-			doPrewarmCycle(creds, identityV3, mc)
+			doPrewarmCycle(ctx, creds, identityV3, mc)
 		}
 	}
 }
 
-func doPrewarmCycle(creds []CredentialID, identityV3 *gophercloud.ServiceClient, mc *memcache.Client) {
+func doPrewarmCycle(ctx context.Context, creds []CredentialID, identityV3 *gophercloud.ServiceClient, mc *memcache.Client) {
 	for _, cred := range creds {
 		prewarmStart := time.Now()
 
 		// get new payload from Keystone
-		payload := GetCredentialFromKeystone(identityV3, cred)
+		payload := GetCredentialFromKeystone(ctx, identityV3, cred)
 		if payload == nil {
 			// there was a problem getting the payload - we already logged the
 			// reason and can directly move on
