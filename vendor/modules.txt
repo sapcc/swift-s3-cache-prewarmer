@@ -4,10 +4,10 @@ github.com/beorn7/perks/quantile
 # github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874
 ## explicit; go 1.18
 github.com/bradfitz/gomemcache/memcache
-# github.com/cespare/xxhash/v2 v2.2.0
+# github.com/cespare/xxhash/v2 v2.3.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
-# github.com/gofrs/uuid/v5 v5.2.0
+# github.com/gofrs/uuid/v5 v5.3.0
 ## explicit; go 1.19
 github.com/gofrs/uuid/v5
 # github.com/gophercloud/gophercloud/v2 v2.1.0
@@ -22,7 +22,7 @@ github.com/gophercloud/gophercloud/v2/openstack/identity/v3/oauth1
 github.com/gophercloud/gophercloud/v2/openstack/identity/v3/tokens
 github.com/gophercloud/gophercloud/v2/openstack/utils
 github.com/gophercloud/gophercloud/v2/pagination
-# github.com/gophercloud/utils/v2 v2.0.0-20240809055823-c3c26a732379
+# github.com/gophercloud/utils/v2 v2.0.0-20240812072210-8ce1fc0f2894
 ## explicit; go 1.22
 github.com/gophercloud/utils/v2/env
 github.com/gophercloud/utils/v2/gnocchi
@@ -31,6 +31,15 @@ github.com/gophercloud/utils/v2/openstack/clientconfig
 # github.com/inconshreveable/mousetrap v1.1.0
 ## explicit; go 1.18
 github.com/inconshreveable/mousetrap
+# github.com/klauspost/compress v1.17.9
+## explicit; go 1.20
+github.com/klauspost/compress
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/internal/cpuinfo
+github.com/klauspost/compress/internal/snapref
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/kr/text v0.2.0
 ## explicit
 # github.com/mitchellh/go-homedir v1.1.0
@@ -39,8 +48,10 @@ github.com/mitchellh/go-homedir
 # github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
 ## explicit
 github.com/munnerz/goautoneg
-# github.com/prometheus/client_golang v1.19.1
+# github.com/prometheus/client_golang v1.20.0
 ## explicit; go 1.20
+github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil
+github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil/header
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/internal
 github.com/prometheus/client_golang/prometheus/promhttp
@@ -56,10 +67,10 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
-# github.com/sapcc/go-api-declarations v1.12.1
+# github.com/sapcc/go-api-declarations v1.12.4
 ## explicit; go 1.21
 github.com/sapcc/go-api-declarations/bininfo
-# github.com/sapcc/go-bits v0.0.0-20240808095728-a371e948855b
+# github.com/sapcc/go-bits v0.0.0-20240815085238-fce0691187a2
 ## explicit; go 1.22
 github.com/sapcc/go-bits/httpext
 github.com/sapcc/go-bits/logg
