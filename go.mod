@@ -4,11 +4,11 @@ go 1.23
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874
-	github.com/gophercloud/gophercloud/v2 v2.1.0
+	github.com/gophercloud/gophercloud/v2 v2.1.1
 	github.com/gophercloud/utils/v2 v2.0.0-20240912080913-c094a6e5b7da
-	github.com/prometheus/client_golang v1.20.3
+	github.com/prometheus/client_golang v1.20.4
 	github.com/sapcc/go-api-declarations v1.12.6
-	github.com/sapcc/go-bits v0.0.0-20240912081530-0967be9f0a6b
+	github.com/sapcc/go-bits v0.0.0-20240919081231-a80ea73a2dce
 	github.com/spf13/cobra v1.8.1
 	go.uber.org/automaxprocs v1.5.3
 )
