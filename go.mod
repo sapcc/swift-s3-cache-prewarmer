@@ -7,8 +7,8 @@ require (
 	github.com/gophercloud/gophercloud/v2 v2.2.0
 	github.com/gophercloud/utils/v2 v2.0.0-20241021065553-b46d0737ee98
 	github.com/prometheus/client_golang v1.20.5
-	github.com/sapcc/go-api-declarations v1.12.8
-	github.com/sapcc/go-bits v0.0.0-20241024075658-61a12e76dcad
+	github.com/sapcc/go-api-declarations v1.12.9
+	github.com/sapcc/go-bits v0.0.0-20241030155708-d3f315057be8
 	github.com/spf13/cobra v1.8.1
 	go.uber.org/automaxprocs v1.6.0
 )
@@ -23,7 +23,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.60.0 // indirect
+	github.com/prometheus/common v0.60.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/sys v0.26.0 // indirect
