@@ -29,14 +29,14 @@ import (
 	"github.com/gophercloud/gophercloud/v2/openstack"
 	"github.com/gophercloud/gophercloud/v2/openstack/identity/v3/ec2credentials"
 	"github.com/gophercloud/gophercloud/v2/openstack/identity/v3/ec2tokens"
-	"github.com/gophercloud/utils/v2/openstack/clientconfig"
+	"github.com/sapcc/go-bits/gophercloudext"
 	"github.com/sapcc/go-bits/logg"
 )
 
 // MustConnectToKeystone connects to Keystone or dies trying.
 func MustConnectToKeystone(ctx context.Context) *gophercloud.ServiceClient {
-	provider, err := clientconfig.AuthenticatedClient(ctx, nil)
-	mustDo("authenticate to OpenStack using OS_* environment variables", err)
+	provider, eo, err := gophercloudext.NewProviderClient(ctx, nil)
+	mustDo("authenticate to OpenStack", err)
 	identityV3, err := openstack.NewIdentityV3(provider, eo)
 	mustDo("select OpenStack Identity V3 endpoint", err)
 	return identityV3
