@@ -102,11 +102,6 @@ func main() {
 	}
 }
 
-var eo = gophercloud.EndpointOpts{
-	Availability: gophercloud.Availability(os.Getenv("OS_INTERFACE")), // defaults to "public" when empty
-	Region:       os.Getenv("OS_REGION_NAME"),                         // defaults to empty which is okay
-}
-
 func runCheckKeystone(cmd *cobra.Command, args []string) {
 	creds := MustParseCredentials(args)
 	identityV3 := MustConnectToKeystone(cmd.Context())

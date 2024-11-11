@@ -7,9 +7,6 @@ github.com/bradfitz/gomemcache/memcache
 # github.com/cespare/xxhash/v2 v2.3.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
-# github.com/gofrs/uuid/v5 v5.3.0
-## explicit; go 1.19
-github.com/gofrs/uuid/v5
 # github.com/gophercloud/gophercloud/v2 v2.2.0
 ## explicit; go 1.22
 github.com/gophercloud/gophercloud/v2
@@ -22,12 +19,6 @@ github.com/gophercloud/gophercloud/v2/openstack/identity/v3/oauth1
 github.com/gophercloud/gophercloud/v2/openstack/identity/v3/tokens
 github.com/gophercloud/gophercloud/v2/openstack/utils
 github.com/gophercloud/gophercloud/v2/pagination
-# github.com/gophercloud/utils/v2 v2.0.0-20241107125844-da754bc75cd6
-## explicit; go 1.22
-github.com/gophercloud/utils/v2/env
-github.com/gophercloud/utils/v2/gnocchi
-github.com/gophercloud/utils/v2/internal
-github.com/gophercloud/utils/v2/openstack/clientconfig
 # github.com/inconshreveable/mousetrap v1.1.0
 ## explicit; go 1.18
 github.com/inconshreveable/mousetrap
@@ -40,11 +31,6 @@ github.com/klauspost/compress/internal/cpuinfo
 github.com/klauspost/compress/internal/snapref
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
-# github.com/kr/text v0.2.0
-## explicit
-# github.com/mitchellh/go-homedir v1.1.0
-## explicit
-github.com/mitchellh/go-homedir
 # github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
 ## explicit
 github.com/munnerz/goautoneg
@@ -70,8 +56,9 @@ github.com/prometheus/procfs/internal/util
 # github.com/sapcc/go-api-declarations v1.12.9
 ## explicit; go 1.21
 github.com/sapcc/go-api-declarations/bininfo
-# github.com/sapcc/go-bits v0.0.0-20241107000306-6eb1626e14d0
+# github.com/sapcc/go-bits v0.0.0-20241111142343-42fa891b5aae
 ## explicit; go 1.23
+github.com/sapcc/go-bits/gophercloudext
 github.com/sapcc/go-bits/httpext
 github.com/sapcc/go-bits/logg
 github.com/sapcc/go-bits/must
@@ -91,13 +78,6 @@ go.uber.org/automaxprocs/maxprocs
 ## explicit; go 1.18
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.19.0
-## explicit; go 1.18
-golang.org/x/text/encoding
-golang.org/x/text/encoding/charmap
-golang.org/x/text/encoding/internal
-golang.org/x/text/encoding/internal/identifier
-golang.org/x/text/transform
 # google.golang.org/protobuf v1.34.2
 ## explicit; go 1.20
 google.golang.org/protobuf/encoding/protodelim
@@ -128,6 +108,3 @@ google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/known/timestamppb
-# gopkg.in/yaml.v3 v3.0.1
-## explicit
-gopkg.in/yaml.v3
