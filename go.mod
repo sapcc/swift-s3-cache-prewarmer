@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874
-	github.com/gophercloud/gophercloud/v2 v2.2.0
+	github.com/gophercloud/gophercloud/v2 v2.3.0
 	github.com/prometheus/client_golang v1.20.5
 	github.com/sapcc/go-api-declarations v1.13.0
 	github.com/sapcc/go-bits v0.0.0-20241205120930-d112494283ba
