@@ -7,7 +7,7 @@ github.com/bradfitz/gomemcache/memcache
 # github.com/cespare/xxhash/v2 v2.3.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
-# github.com/gophercloud/gophercloud/v2 v2.3.0
+# github.com/gophercloud/gophercloud/v2 v2.4.0
 ## explicit; go 1.22
 github.com/gophercloud/gophercloud/v2
 github.com/gophercloud/gophercloud/v2/openstack
