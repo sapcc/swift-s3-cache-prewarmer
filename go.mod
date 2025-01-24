@@ -7,7 +7,7 @@ require (
 	github.com/gophercloud/gophercloud/v2 v2.4.0
 	github.com/prometheus/client_golang v1.20.5
 	github.com/sapcc/go-api-declarations v1.13.2
-	github.com/sapcc/go-bits v0.0.0-20250116161636-acb6f69bc440
+	github.com/sapcc/go-bits v0.0.0-20250123075407-996af6490bfc
 	github.com/spf13/cobra v1.8.1
 	go.uber.org/automaxprocs v1.6.0
 )
@@ -19,9 +19,9 @@ require (
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.61.0 // indirect
+	github.com/prometheus/common v0.62.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/sys v0.28.0 // indirect
-	google.golang.org/protobuf v1.35.2 // indirect
+	google.golang.org/protobuf v1.36.1 // indirect
 )
