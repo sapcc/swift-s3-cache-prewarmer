@@ -8,7 +8,7 @@ require (
 	github.com/prometheus/client_golang v1.21.0
 	github.com/sapcc/go-api-declarations v1.14.0
 	github.com/sapcc/go-bits v0.0.0-20250220135206-3e8d8756636d
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.9.1
 	go.uber.org/automaxprocs v1.6.0
 )
 
@@ -21,7 +21,7 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.62.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 )
