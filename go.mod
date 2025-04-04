@@ -3,7 +3,7 @@ module github.com/sapcc/swift-s3-cache-prewarmer
 go 1.24
 
 require (
-	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874
+	github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf
 	github.com/gophercloud/gophercloud/v2 v2.7.0
 	github.com/prometheus/client_golang v1.21.1
 	github.com/sapcc/go-api-declarations v1.14.3
