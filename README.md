@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # swift-s3-cache-prewarmer
 
 [![CI](https://github.com/sapcc/swift-s3-cache-prewarmer/actions/workflows/ci.yaml/badge.svg)](https://github.com/sapcc/swift-s3-cache-prewarmer/actions/workflows/ci.yaml)
