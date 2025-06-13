@@ -118,9 +118,7 @@ func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 		Project: other.Project,
 		Secret:  other.Secret,
 	}
-	for k, v := range other.Headers {
-		rhs.Headers[k] = v
-	}
+	maps.Copy(rhs.Headers, other.Headers)
 
 	// the one thing that makes this function different from a plain
 	// reflect.DeepEqual(): Headers["X-Roles"] is a comma-separated list
