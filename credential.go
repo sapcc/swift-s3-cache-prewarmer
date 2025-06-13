@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"reflect"
 	"sort"
 	"strings"
@@ -72,7 +73,7 @@ type CredentialPayload struct {
 
 // MarshalJSON implements the json.Marshaler interface.
 func (p CredentialPayload) MarshalJSON() ([]byte, error) {
-	return json.Marshal([]interface{}{p.Headers, p.Project, p.Secret})
+	return json.Marshal([]any{p.Headers, p.Project, p.Secret})
 }
 
 // UnmarshalJSON implements the json.Marshaler interface.
@@ -118,9 +119,7 @@ func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 		Project: other.Project,
 		Secret:  other.Secret,
 	}
-	for k, v := range other.Headers {
-		rhs.Headers[k] = v
-	}
+	maps.Copy(rhs.Headers, other.Headers)
 
 	// the one thing that makes this function different from a plain
 	// reflect.DeepEqual(): Headers["X-Roles"] is a comma-separated list
