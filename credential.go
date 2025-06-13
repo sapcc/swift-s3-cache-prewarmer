@@ -72,7 +72,7 @@ type CredentialPayload struct {
 
 // MarshalJSON implements the json.Marshaler interface.
 func (p CredentialPayload) MarshalJSON() ([]byte, error) {
-	return json.Marshal([]interface{}{p.Headers, p.Project, p.Secret})
+	return json.Marshal([]any{p.Headers, p.Project, p.Secret})
 }
 
 // UnmarshalJSON implements the json.Marshaler interface.
