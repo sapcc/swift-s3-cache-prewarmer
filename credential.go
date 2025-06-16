@@ -115,7 +115,7 @@ func (p *CredentialPayload) EqualTo(other *CredentialPayload) bool {
 
 	// make a deep copy of the RHS
 	rhs := &CredentialPayload{
-		Headers: make(map[string]string, len(other.Headers)),
+		Headers: maps.Clone(other.Headers),
 		Project: other.Project,
 		Secret:  other.Secret,
 	}
