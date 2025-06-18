@@ -193,7 +193,7 @@ func doPrewarmCycle(ctx context.Context, creds []CredentialID, identityV3 *gophe
 	}
 }
 
-func printAsJSON(val interface{}) {
+func printAsJSON(val any) {
 	buf := must.Return(json.MarshalIndent(val, "", "  "))
 	fmt.Println(string(buf))
 }
