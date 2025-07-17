@@ -6,8 +6,8 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf
 	github.com/gophercloud/gophercloud/v2 v2.7.0
 	github.com/prometheus/client_golang v1.22.0
-	github.com/sapcc/go-api-declarations v1.16.0
-	github.com/sapcc/go-bits v0.0.0-20250710190843-788fa8ba727b
+	github.com/sapcc/go-api-declarations v1.17.1
+	github.com/sapcc/go-bits v0.0.0-20250717162732-01df4e41958b
 	github.com/spf13/cobra v1.9.1
 	go.uber.org/automaxprocs v1.6.0
 )
