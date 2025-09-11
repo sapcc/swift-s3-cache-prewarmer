@@ -1,6 +1,6 @@
 module github.com/sapcc/swift-s3-cache-prewarmer
 
-go 1.24
+go 1.25
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf
