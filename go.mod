@@ -8,7 +8,7 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/sapcc/go-api-declarations v1.18.0
 	github.com/sapcc/go-bits v0.0.0-20251204133412-746f1e02903e
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	go.uber.org/automaxprocs v1.6.0
 )
 
