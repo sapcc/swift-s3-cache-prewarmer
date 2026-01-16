@@ -21,7 +21,6 @@ import (
 	"github.com/sapcc/go-bits/must"
 	"github.com/sapcc/go-bits/osext"
 	"github.com/spf13/cobra"
-	"go.uber.org/automaxprocs/maxprocs"
 )
 
 var flagConservative bool
@@ -31,8 +30,6 @@ var flagMemcacheServers []string
 
 func main() {
 	logg.ShowDebug = osext.GetenvBool("SWIFT_S3CP_DEBUG")
-	undoMaxprocs := must.Return(maxprocs.Set(maxprocs.Logger(logg.Debug)))
-	defer undoMaxprocs()
 
 	wrap := httpext.WrapTransport(&http.DefaultTransport)
 	wrap.SetInsecureSkipVerify(os.Getenv("HTTPS_PROXY") != "") // skip cert validation when behind mitmproxy (DO NOT SET IN PRODUCTION)
@@ -82,7 +79,7 @@ func main() {
 	ctx := httpext.ContextWithSIGINT(context.Background(), 1*time.Second)
 	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		// the error was already printed by Execute()
-		os.Exit(1) //nolint:gocritic // undomacprocs is not critical to be run
+		os.Exit(1)
 	}
 }
 
