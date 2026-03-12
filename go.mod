@@ -4,10 +4,10 @@ go 1.26
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf
-	github.com/gophercloud/gophercloud/v2 v2.11.0
+	github.com/gophercloud/gophercloud/v2 v2.11.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/sapcc/go-api-declarations v1.20.2
-	github.com/sapcc/go-bits v0.0.0-20260306103145-db6bddb66aec
+	github.com/sapcc/go-bits v0.0.0-20260312170110-034b497ebb7e
 	github.com/spf13/cobra v1.10.2
 )
 
