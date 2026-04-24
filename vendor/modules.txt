@@ -1,7 +1,7 @@
 # github.com/beorn7/perks v1.0.1
 ## explicit; go 1.11
 github.com/beorn7/perks/quantile
-# github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf
+# github.com/bradfitz/gomemcache v0.0.0-20260422231931-4d751bb6e37c
 ## explicit; go 1.18
 github.com/bradfitz/gomemcache/memcache
 # github.com/cespare/xxhash/v2 v2.3.0
