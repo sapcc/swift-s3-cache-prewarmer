@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20260422231931-4d751bb6e37c
-	github.com/gophercloud/gophercloud/v2 v2.12.0
+	github.com/gophercloud/gophercloud/v2 v2.13.0
 	github.com/prometheus/client_golang v1.23.2
 	github.com/sapcc/go-api-declarations v1.24.0
 	github.com/sapcc/go-bits v0.0.0-20260623114633-b9734b46a368
